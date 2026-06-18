@@ -18,17 +18,100 @@
             color: #333;
             line-height: 1.6;
             padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        /* Container */
+        /* --- BACKGROUND MOVING PARTICLES EFFECT --- */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* কনটেন্টের পেছনে থাকবে */
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            bottom: -20px;
+            background: rgba(214, 48, 49, 0.08); /* হালকা লালচে লাক্সারি টোন */
+            border-radius: 50%;
+            animation: floatUp 12s infinite linear;
+        }
+
+        /* হার্ট শেপ পার্টিকল */
+        .particle.heart {
+            background: transparent;
+            width: 15px;
+            height: 15px;
+        }
+        .particle.heart::before,
+        .particle.heart::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 15px;
+            height: 15px;
+            background: rgba(214, 48, 49, 0.06);
+            border-radius: 50% 50% 0 0;
+        }
+        .particle.heart::before {
+            left: 7.5px;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        .particle.heart::after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+
+        /* বিভিন্ন সাইজ ও টাইমিংয়ের পার্টিকল পজিশনিং */
+        .particle:nth-child(1) { left: 10%; width: 20px; height: 20px; animation-duration: 14s; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 25%; width: 12px; height: 12px; animation-duration: 18s; animation-delay: 2s; background: rgba(245, 205, 121, 0.15); } /* সোনালী টোন */
+        .particle:nth-child(3) { left: 40%; animation-duration: 16s; animation-delay: 4s; } /* হার্ট */
+        .particle:nth-child(4) { left: 55%; width: 25px; height: 25px; animation-duration: 22s; animation-delay: 1s; }
+        .particle:nth-child(5) { left: 70%; animation-duration: 15s; animation-delay: 6s; } /* হার্ট */
+        .particle:nth-child(6) { left: 85%; width: 18px; height: 18px; animation-duration: 20s; animation-delay: 3s; background: rgba(245, 205, 121, 0.12); }
+        .particle:nth-child(7) { left: 32%; width: 15px; height: 15px; animation-duration: 13s; animation-delay: 7s; }
+        .particle:nth-child(8) { left: 90%; animation-duration: 19s; animation-delay: 5s; } /* হার্ট */
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-105vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* ----------------------------------------- */
+
+        /* Smooth Entry Animation for Container */
         .cv-container {
             max-width: 750px;
             margin: 0 auto;
             background: #ffffff;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border-top: 8px solid #d63031; /* Premium red accent matching hijab */
+            position: relative;
+            
+            /* Animation applied */
+            animation: slideUpFade 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
 
         /* Header / Profile Section */
@@ -43,8 +126,12 @@
             border-radius: 50%;
             object-fit: cover;
             border: 4px solid #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
             margin-bottom: 15px;
+            
+            /* Image floating and zoom-in animation */
+            animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards, floatImage 4s ease-in-out infinite 1s;
+            opacity: 0;
         }
 
         .profile-section h1 {
@@ -53,10 +140,42 @@
             margin-bottom: 5px;
         }
 
+        .profile-section h1 a {
+            color: #2d3436;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        /* Modern underline hover effect */
+        .profile-section h1 a::after, .info-value a::after, .family-member strong a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #d63031;
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .profile-section h1 a:hover::after, .info-value a:hover::after, .family-member strong a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .profile-section h1 a:hover, .info-value a:hover, .family-member strong a:hover {
+            color: #d63031;
+        }
+
         .profile-section p {
             font-size: 16px;
             color: #636e72;
             font-style: italic;
+            letter-spacing: 0.5px;
         }
 
         /* Sections Styling */
@@ -72,6 +191,19 @@
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        /* Subtle underline slide-in for section titles */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            height: 2px;
+            width: 60px;
+            background: #d63031;
+            animation: lineExpand 1.5s ease-out forwards;
         }
 
         /* Data List Layout */
@@ -85,6 +217,13 @@
             display: flex;
             border-bottom: 1px solid #f1f2f6;
             padding-bottom: 8px;
+            transition: padding-left 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Hover effect for grid items */
+        .info-item:hover {
+            padding-left: 8px;
+            border-bottom-color: #ffeaa7;
         }
 
         .info-label {
@@ -99,11 +238,29 @@
             flex-grow: 1;
         }
 
+        .info-value a, .family-member strong a {
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
         /* Family specific style for layered lists */
         .family-member {
-            margin-bottom: 10px;
-            padding-left: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
             border-left: 3px solid #f5cd79;
+            background: transparent;
+            border-radius: 0 6px 6px 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Smooth hover card effect for family info */
+        .family-member:hover {
+            background: #fffdf9;
+            border-left-color: #d63031;
+            transform: translateX(5px);
+            box-shadow: -2px 4px 12px rgba(0,0,0,0.02);
         }
 
         .family-member strong {
@@ -113,6 +270,7 @@
         .family-member p {
             font-size: 14px;
             color: #57606f;
+            margin-top: 2px;
         }
 
         /* Text Block Style for Expectations */
@@ -120,15 +278,62 @@
             color: #2d3436;
             text-align: justify;
             background-color: #fafafa;
-            padding: 15px;
+            padding: 18px;
             border-radius: 6px;
             border-left: 4px solid #d63031;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.01);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .expectation-text:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+        }
+
+        /* Keyframes for Animations */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes floatImage {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        @keyframes lineExpand {
+            0% { width: 0; }
+            100% { width: 80px; }
         }
 
         /* Responsive Design */
         @media (max-width: 600px) {
             .info-item {
                 flex-direction: column;
+            }
+            .info-item:hover {
+                padding-left: 4px;
             }
             .info-label {
                 width: 100%;
@@ -137,17 +342,32 @@
             .cv-container {
                 padding: 20px;
             }
+            .family-member:hover {
+                transform: translateX(3px);
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- Background Animation Elements -->
+<div class="bg-animation">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle heart"></div>
+    <div class="particle"></div>
+    <div class="particle heart"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle heart"></div>
+</div>
 
 <div class="cv-container">
 
     <!-- Profile Image & Name -->
     <div class="profile-section">
         <img src="adia.jpg" alt="Tamrin Tabassom Adia" class="profile-img">
-        <h1>Tamrin Tabassom Adia</h1>
+        <h1><a href="" target="_blank">Tamrin Tabassom Adia</a></h1>
         <p>Biodata for Marriage</p>
     </div>
 
@@ -157,7 +377,7 @@
         <div class="info-grid">
             <div class="info-item">
                 <span class="info-label">Full Name:</span>
-                <span class="info-value">Tamrin Tabassom Adia</span>
+                <span class="info-value"><a href="https://facebook.com/tamrin.tabassom.adia" target="_blank">Tamrin Tabassom Adia</a></span>
             </div>
             <div class="info-item">
                 <span class="info-label">Age:</span>
@@ -228,18 +448,18 @@
             </div>
 
             <div class="family-member">
-                <strong>Mother: Umme Hafsa (B.A)</strong>
+                <strong>Mother: <a href="https://www.facebook.com/umme.hufsa.1" target="_blank">Umme Hafsa (B.A)</a></strong>
                 <p>Teacher at Khutakhali Uttor Fulchori Primary School</p>
             </div>
 
             <div class="family-member">
-                <strong>Elder Brother: Ahteshamul Hoque (B.Sc & M.Sc in CSE)</strong>
+                <strong>Elder Brother: <a href="https://www.facebook.com/Ahtesham.BU.BlackLychee" target="_blank">Ahteshamul Hoque (B.Sc & M.Sc in CSE)</a></strong>
                 <p>Teacher at Bandarban Collectorate School and College</p>
                 <p style="font-size: 13px; color: #7f8c8d;">Sister-in-law: Zannatul Mawa Mimmi (4th Year Student in Bangla, Chattagram College)</p>
             </div>
 
             <div class="family-member">
-                <strong>2nd Elder Brother: Ebteshamul Hoque Adiv</strong>
+                <strong>2nd Elder Brother: <a href="https://www.facebook.com/ebteshamul.hoque" target="_blank">Ebteshamul Hoque Adiv</a></strong>
                 <p>Intern Doctor at Rangamati Medical College</p>
                 <p style="font-size: 13px; color: #7f8c8d;">Sister-in-law: Rima Akter (Intern Doctor at Rangamati Medical College)</p>
             </div>
